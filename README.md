@@ -15,12 +15,18 @@ This was one of the harder portions of the implementation, while we could have d
 
 ## Challenges we ran into
 
+One of the biggest challenges we ran into is the camera implementation of the system. We were limited to the camera we used which had very limiting processing power. Due to this, implementing the camera functionality to our system was difficult. 
+
 ## Accomplishments that we're pround of 
+
+We were proud to have hardware implementation in our project. Being able to integrate a limit switch as well as a camera which plays a critical role in the system was a major milestone as an engineer. 
 
 ## What we learned
 
+Through this project, we have learned a valuable aspect of embedded software engineering along with several AWS tools such as textract and S3 storage. Not only did we learn about AWS services, but we also were able to have hands on experience with hardware. 
+
 ## What's next for Fresh from the Fridge!
 
-
+Our next step is to implement a higher performing camera such as a set from rasberry pi. Due to the time restrictions we were only able to integrate a low-end camera that we had access to. For a future update, having a better camera would improve recognition quality which helps produce better results from the fridge. 
 
 
