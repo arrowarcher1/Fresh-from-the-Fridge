@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Receipt · Fresh from the Fridge</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(180deg, #f8fafc 0%, #ecfdf5 45%, #ffffff 100%);
+      color: #0f172a;
+    }
+    .page-shell {
+      min-height: 100vh;
+      background: radial-gradient(circle at top left, rgba(59, 130, 246, 0.08), transparent 40%),
+                  radial-gradient(circle at bottom right, rgba(16, 185, 129, 0.08), transparent 45%);
+    }
+    .upload-card {
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(236, 253, 245, 0.92));
+      border: 1px solid rgba(16, 185, 129, 0.15);
+      box-shadow: 0 25px 35px -25px rgba(13, 148, 136, 0.35);
+    }
+    .upload-zone {
+      border: 2px dashed rgba(16, 185, 129, 0.6);
+      background: rgba(240, 253, 244, 0.6);
+      transition: all 0.3s ease;
+    }
+    .upload-zone:hover {
+      border-color: rgba(5, 150, 105, 0.9);
+      background-color: rgba(236, 253, 245, 0.8);
+      box-shadow: 0 18px 28px -22px rgba(5, 150, 105, 0.55);
+    }
+    .upload-zone.dragover {
+      border-color: rgba(5, 150, 105, 0.95);
+      background-color: rgba(209, 250, 229, 0.95);
+      transform: translateY(-2px);
+    }
+    #upload-prompt p {
+      color: #0f172a;
+    }
+    #upload-prompt p.text-sm {
+      color: #1e293b;
+      opacity: 0.75;
+    }
+    #preview-image {
+      max-width: 100%;
+      max-height: 420px;
+      object-fit: contain;
+      border-radius: 18px;
+      box-shadow: 0 18px 28px -28px rgba(15, 118, 110, 0.55);
+    }
+    .action-button-primary {
+      background: linear-gradient(120deg, #0d9488 0%, #059669 55%, #047857 100%);
+      color: #ffffff;
+      box-shadow: 0 15px 30px -20px rgba(15, 118, 110, 0.6);
+    }
+    .action-button-primary:hover {
+      background: linear-gradient(120deg, #0f766e 0%, #047857 55%, #065f46 100%);
+      box-shadow: 0 18px 35px -22px rgba(15, 118, 110, 0.65);
+    }
+    .action-button-secondary {
+      color: #0f766e;
+      border: 1px solid rgba(13, 148, 136, 0.35);
+      background: rgba(236, 253, 245, 0.75);
+    }
+    .action-button-secondary:hover {
+      color: #064e3b;
+      border-color: rgba(13, 148, 136, 0.55);
+      background: rgba(236, 253, 245, 0.95);
+    }
+    .spinner {
+      border: 3px solid #e2e8f0;
+      border-top: 3px solid #0d9488;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+    .status-card {
+      background: rgba(240, 253, 244, 0.9);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+    .error-card {
+      background: rgba(254, 242, 242, 0.92);
+      border: 1px solid rgba(248, 113, 113, 0.25);
+    }
+    .success-card {
+      background: rgba(236, 253, 245, 0.92);
+      border: 1px solid rgba(52, 211, 153, 0.35);
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body class="page-shell text-gray-900">
+  <header class="sticky top-0 z-30 bg-white bg-opacity-95 border-b border-emerald-100 shadow-sm">
+    <div class="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-3">
+        <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-teal-500 text-xs font-semibold uppercase text-white">FF</span>
+        <span class="text-lg font-bold tracking-tight text-emerald-900">Fresh from the Fridge</span>
+      </a>
+      <nav class="flex items-center gap-1 text-sm">
+        <a href="/" class="inline-flex items-center px-3 py-2 rounded-lg text-emerald-700 hover:bg-emerald-50 hover:text-emerald-900">Fridge</a>
+        <a href="/recipes" class="inline-flex items-center px-3 py-2 rounded-lg text-emerald-700 hover:bg-emerald-50 hover:text-emerald-900">Suggested Recipes</a>
+        <a aria-current="page" href="/upload" class="inline-flex items-center px-3 py-2 rounded-lg font-medium text-emerald-900 bg-emerald-100 border border-emerald-200 hover:bg-emerald-200 hover:border-emerald-300 transition">Upload Receipt</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-6 py-10">
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-emerald-900 mb-2">Upload Receipt</h1>
+      <p class="text-emerald-700">Upload your grocery receipt and our system will automatically process it and add items to your fridge within moments.</p>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-lg border border-emerald-100 p-8" style="background: linear-gradient(160deg, rgba(255,255,255,0.96), rgba(236,253,245,0.92));">
+      <form id="upload-form" enctype="multipart/form-data">
+        <div class="upload-zone rounded-xl p-12 text-center cursor-pointer mb-6" id="drop-zone">
+          <div id="upload-prompt">
+            <svg class="mx-auto h-16 w-16 text-emerald-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+            </svg>
+            <p class="text-lg font-semibold text-emerald-900 mb-2">Drop your receipt photo here</p>
+            <p class="text-sm text-emerald-600 mb-4">or click to browse</p>
+            <input type="file" id="file-input" name="receiptImage" accept="image/*" class="hidden" required>
+            <button type="button" onclick="document.getElementById('file-input').click()" class="inline-flex items-center px-6 py-3 action-button-primary font-semibold rounded-lg">
+              Choose File
+            </button>
+          </div>
+          <div id="preview-container" class="hidden">
+            <img id="preview-image" class="rounded-lg mx-auto mb-4" alt="Receipt preview">
+            <button type="button" onclick="clearImage()" class="text-sm text-emerald-700 hover:text-emerald-900 underline">
+              Choose different image
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" id="submit-btn" class="w-full inline-flex items-center justify-center px-6 py-4 action-button-primary font-bold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed">
+          <span id="submit-text">Upload to Process</span>
+        </button>
+      </form>
+
+      <div id="loading" class="hidden text-center py-8">
+        <div class="spinner mx-auto mb-4"></div>
+        <p class="text-slate-700 font-semibold">Uploading receipt...</p>
+        <p class="text-sm text-slate-500 mt-2">Hang tight! We’ll send this to your fridge in a moment.</p>
+      </div>
+
+      <div id="result" class="hidden mt-6 p-6 rounded-lg"></div>
+    </div>
+  </main>
+
+  <footer class="max-w-5xl mx-auto px-6 py-8 text-center text-sm text-emerald-900/70">
+  </footer>
+
+  <script>
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input');
+    const uploadForm = document.getElementById('upload-form');
+    const previewContainer = document.getElementById('preview-container');
+    const previewImage = document.getElementById('preview-image');
+    const uploadPrompt = document.getElementById('upload-prompt');
+    const loading = document.getElementById('loading');
+    const result = document.getElementById('result');
+    const submitBtn = document.getElementById('submit-btn');
+
+    // Drag and drop handlers
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropZone.addEventListener(eventName, () => dropZone.classList.add('dragover'), false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, () => dropZone.classList.remove('dragover'), false);
+    });
+
+    dropZone.addEventListener('drop', handleDrop, false);
+    dropZone.addEventListener('click', (e) => {
+      if (e.target !== fileInput) {
+        fileInput.click();
+      }
+    });
+
+    function handleDrop(e) {
+      const dt = e.dataTransfer;
+      const files = dt.files;
+      if (files.length > 0) {
+        fileInput.files = files;
+        handleFiles(files);
+      }
+    }
+
+    fileInput.addEventListener('change', (e) => {
+      handleFiles(e.target.files);
+    });
+
+    function handleFiles(files) {
+      if (files.length > 0) {
+        const file = files[0];
+        if (file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            previewImage.src = e.target.result;
+            uploadPrompt.classList.add('hidden');
+            previewContainer.classList.remove('hidden');
+          };
+          reader.readAsDataURL(file);
+        }
+      }
+    }
+
+    function clearImage() {
+      fileInput.value = '';
+      previewImage.src = '';
+      uploadPrompt.classList.remove('hidden');
+      previewContainer.classList.add('hidden');
+    }
+
+    uploadForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(uploadForm);
+      
+      // Show loading state
+      uploadForm.classList.add('hidden');
+      loading.classList.remove('hidden');
+      result.classList.add('hidden');
+
+      try {
+        const response = await fetch('/api/upload-receipt', {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await response.json();
+
+        loading.classList.add('hidden');
+        result.classList.remove('hidden');
+
+        if (response.ok && data.success) {
+          result.className = 'success-card mt-6 p-6 rounded-xl';
+          result.innerHTML = `
+            <div class="flex items-start gap-3">
+              <svg class="h-6 w-6 text-emerald-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <div class="flex-1">
+                <h3 class="text-lg font-semibold text-emerald-900 mb-2">Receipt Uploaded Successfully!</h3>
+                <p class="text-sm text-emerald-700 mb-3">${data.message || 'Receipt uploaded successfully! Your fridge will be updated shortly.'}</p>
+                <div class="bg-white rounded-lg p-4 mb-4 border border-emerald-100">
+                  <div class="flex items-center gap-2 mb-2">
+                    <svg class="h-5 w-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                    <p class="text-sm font-semibold text-emerald-800">Processing Status</p>
+                  </div>
+                  <p class="text-xs text-slate-600">Our system is analyzing your receipt and will automatically add items to your fridge within the next few moments.</p>
+                </div>
+                <div class="flex gap-3 mt-4">
+                  <a href="/" class="inline-flex items-center px-4 py-2 action-button-primary font-semibold rounded-lg">
+                    View Fridge
+                  </a>
+                  <button onclick="location.reload()" class="inline-flex items-center px-4 py-2 action-button-secondary font-semibold rounded-lg">
+                    Upload Another
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+        } else {
+          throw new Error(data.error || 'Upload failed');
+        }
+      } catch (error) {
+        loading.classList.add('hidden');
+        result.classList.remove('hidden');
+        result.className = 'error-card mt-6 p-6 rounded-xl';
+        result.innerHTML = `
+          <div class="flex items-start gap-3">
+            <svg class="h-6 w-6 text-red-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <div class="flex-1">
+              <h3 class="text-lg font-semibold text-red-900 mb-2">Error Processing Receipt</h3>
+              <p class="text-sm text-red-700 mb-4">${error.message}</p>
+              <button onclick="location.reload()" class="inline-flex items-center px-4 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition">
+                Try Again
+              </button>
+            </div>
+          </div>
+        `;
+      }
+    });
+  </script>
+</body>
+</html>
+

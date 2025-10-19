@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fresh from the Fridge</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+  </head>
+<body class="min-h-screen text-gray-900" style="background: radial-gradient(circle at top left, rgba(167,243,208,0.45), rgba(240,253,250,0.9)), linear-gradient(135deg, rgba(217,249,157,0.45) 0%, rgba(255,255,255,0.8) 60%, rgba(187,247,208,0.5) 100%);">
+  <header class="sticky top-0 z-30 bg-white bg-opacity-95 border-b border-emerald-100 shadow-sm">
+    <div class="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-3">
+        <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-teal-500 text-xs font-semibold uppercase text-white">FF</span>
+        <span class="text-lg font-bold tracking-tight text-emerald-900">Fresh from the Fridge</span>
+      </a>
+      <nav class="flex items-center gap-1 text-sm">
+        <a aria-current="page" href="/" class="inline-flex items-center px-3 py-2 rounded-lg font-medium text-emerald-900 bg-emerald-100 border border-emerald-200 hover:bg-emerald-200 hover:border-emerald-300 transition">Fridge</a>
+        <a href="/recipes" class="inline-flex items-center px-3 py-2 rounded-lg text-emerald-700 border border-transparent hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-900 transition">Suggested Recipes</a>
+        <a href="/upload" class="inline-flex items-center px-3 py-2 rounded-lg text-emerald-700 border border-transparent hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-900 transition">Upload Receipt</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-6 py-10 space-y-6">
+    <section class="grid sm:grid-cols-2 gap-4">
+      <div class="bg-white rounded-xl border border-emerald-100 shadow-sm p-5" style="background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(240,253,244,0.9));">
+        <div class="text-sm uppercase tracking-widest text-emerald-500 font-semibold mb-2">What's chilling</div>
+        <div class="flex items-end justify-between">
+          <div>
+            <p class="text-emerald-900 text-3xl font-semibold mb-1"><%= (items && items.length) ? items.length : 0 %> items</p>
+            <p class="text-sm text-emerald-700">Everything in one organized view.</p>
+          </div>
+          <div class="w-14 h-14 rounded-full flex items-center justify-center bg-gradient-to-br from-emerald-500 to-teal-500">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-7 w-7 text-white">
+              <path d="M4 16.5L9.5 11L13.5 15L20 8.5" />
+              <path d="M20 8.5H15" />
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="text-white rounded-xl shadow-md p-5" style="background: linear-gradient(135deg, #34d399, #4ade80 40%, #22d3ee 100%);">
+        <p class="text-sm uppercase tracking-widest font-semibold mb-2">Next up</p>
+        <p class="text-xl font-semibold mb-1">Browse Suggested Recipes</p>
+        <p class="text-sm text-emerald-50 mb-4">See dishes matched to your fridge inventory.</p>
+        <a href="/recipes" class="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-white bg-opacity-20 hover:bg-opacity-30 transition">Explore recipes<span>→</span></a>
+      </div>
+    </section>
+
+    <section>
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-3">
+          <h2 class="text-xl font-semibold text-emerald-900">Current Contents</h2>
+        </div>
+        <a href="/recipes" class="text-sm font-semibold text-emerald-700 hover:text-emerald-900">Suggested Recipes →</a>
+      </div>
+      <div class="bg-white rounded-2xl shadow-lg border border-emerald-100 overflow-hidden" style="background: linear-gradient(160deg, rgba(255,255,255,0.96), rgba(236,253,245,0.92));">
+        <table class="min-w-full divide-y divide-emerald-100 text-sm">
+          <thead class="bg-emerald-50/60 text-xs">
+            <tr>
+              <th class="px-4 py-2 text-left font-medium text-emerald-800 uppercase tracking-wider">Ingredient</th>
+              <th class="px-4 py-2 text-left font-medium text-emerald-800 uppercase tracking-wider">Quantity</th>
+              <th class="px-4 py-2 text-left font-medium text-emerald-800 uppercase tracking-wider">Added</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-emerald-50">
+            <% if (items && items.length) { %>
+              <% items.forEach(function(item){ %>
+                <tr class="hover:bg-emerald-50/40">
+                  <td class="px-4 py-2 whitespace-nowrap font-semibold text-emerald-900">
+                    <span class="inline-flex items-center gap-2">
+                      <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+                      <%= item.ingredient_name %>
+                    </span>
+                  </td>
+                  <td class="px-4 py-2 whitespace-nowrap">
+                    <% if (item.quantity) { %>
+                      <span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-emerald-100 text-emerald-800"><%= item.quantity %></span>
+                    <% } else { %>
+                      <span class="text-gray-400">—</span>
+                    <% } %>
+                  </td>
+                  <td class="px-4 py-2 whitespace-nowrap text-sm">
+                    <span class="inline-flex items-center px-2 py-1 rounded-full bg-gray-50 text-gray-600 ring-1 ring-gray-200"><%= new Date(item.added_date).toLocaleDateString() %></span>
+                  </td>
+                </tr>
+              <% }) %>
+            <% } else { %>
+              <tr>
+                <td class="px-4 py-8 text-center text-gray-500" colspan="3">
+                  <div class="flex flex-col items-center gap-2">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 text-emerald-500">
+                        <rect x="4" y="3" width="16" height="18" rx="2" />
+                        <path d="M4 9H20" />
+                        <path d="M10 13H14" />
+                      </svg>
+                    </div>
+                    <div class="font-medium">Your fridge looks empty</div>
+                    <div class="text-sm text-gray-500">Once connected, items will appear here.</div>
+                  </div>
+                </td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="max-w-5xl mx-auto px-6 py-8 text-center text-sm text-emerald-900/70">
+  </footer>
+</body>
+</html>
+
+
